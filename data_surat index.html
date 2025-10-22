@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Data Surat dari Google Drive - e-Surat Seberuang</title>
+  <style> GUNAKAN LINK FOLDER DRIVE SAYA ITU  
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #0f8b66;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #0f8b66;
+      color: white;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    button {
+      background: #0f8b66;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0c6b4e;
+    }
+    .back {
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h2>📂 Daftar Data Surat dari Google Drive</h2>
+
+  <table id="driveTable">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Nama File</th>
+        <th>Tipe</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="back">
+    <button onclick="window.location.href='https://infosurat.github.io/e-surat/'">⬅️ Kembali ke Halaman Utama</button>
+  </div>
+
+  <script>
+    // Ganti dengan ID Folder Google Drive kamu
+    const folderId = "1tmLutjstSJMt9TCKj8hWJj__Yfjfgjvs";
+
+    // Gunakan API Google Drive (public folder)
+    fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=AIzaSyCAG-Nf5uZIMuDqz9k0zPEVv3l3vVUT5yo&fields=files(id,name,mimeType)`)
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.querySelector("#driveTable tbody");
+        data.files.forEach((file, index) => {
+          const link = `https://drive.google.com/uc?export=download&id=${file.id}`;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${file.name}</td>
+            <td>${file.mimeType}</td>
+            <td><a href="${link}" target="_blank"><button>📥 Download</button></a></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Gagal memuat daftar file. Pastikan folder Google Drive diset publik.");
+      });
+  </script>
+</body>
+</html>
